@@ -72,3 +72,6 @@ function writeGenres (){
 }
 
 writeGenres();
+
+
+3

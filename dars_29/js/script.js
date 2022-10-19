@@ -17,13 +17,37 @@ const adv = document.querySelectorAll('.promo__adv img'),
   addForm = document.querySelector('form.add'),
   inpitVal = document.querySelector('.adding__input'),
   checkbox = document.querySelector("[type='checkbox']")
+  // deleteSeries = document.querySelectorAll('.delete')
 
 
 
-  // 32 dars 1. funcsion yozing submit bosilganda sahifa qayta yuklanmasligi kerak.
+  // 32 dars 1. function yozing submit bosilganda sahifa qayta yuklanmasligi kerak.
   // va inputga yozilganda serialni seriesDB.series ga massivga qo'shing
   // input ichidagi qiymatni olish uchun input.value yordamida oling
+
+  addForm.addEventListener('submit', (event) => {
+    event.preventDefault()
+
+    let newSeries = inpitVal.value
+    const favourite = checkbox.checked
+
+    if (newSeries){
+      if (newSeries.length > 18 ){
+        newSeries = `${newSeries.substring(0, 18)}...`
+      }
+      if(favourite){
+        console.log("Sevimli serial qo'shildi.")
+      }
+      seriesDB.series.push(newSeries)
+      Arrsort(seriesDB.series)
+      
+    }
+    
+    createSeriesList(seriesDB.series, seriesList)
+    event.target.reset()
+  })
    
+
   // 32 dars 2. Agar serialni nomi 18 tadan ko'p bo'lsa uni kesib ... bilan yozing
 
   // 32 dars 3. Agar formada checkbox done belgisi qo'yilsa console ga "Sevimli serial qo'shildi" xabarini chiqaring
@@ -36,15 +60,26 @@ const adv = document.querySelectorAll('.promo__adv img'),
 
 
   // 29 dars 1. Reklama blokini o'chirish 
-  adv.forEach((item) => {
-    item.remove()
-  })
+  const deleteAdv = (arr) => {
+    adv.forEach((item) => {
+      item.remove()
+    })
+  }
+  
 
+const makeChanges = () => {
   // 29 dars 2. Drama janrini komediyaga o'zgartiring
-genre.textContent = 'comedy'
-
+  genre.textContent = 'comedy'
+  
   // 29 dars 3. Orqa fonni o'zgartiring. JS yordamida
   wrapper.style.backgroundImage = 'url("img/1.jpg")'
+
+} 
+
+const Arrsort = (arr) => {
+  arr.sort()
+}
+
 
   // 29 dars 4. Seriallarni JS dagi massiv yordamida ko'rsating
   // 29 dars 5. Har bir serialni raqami bo'lsin.
@@ -59,19 +94,36 @@ const seriesDB = {
   ],
 }
 
-seriesList.innerHTML = ''
 
-seriesDB.series.forEach((item, ind) =>{
-  seriesList.innerHTML += `
-    <li class="promo__interactive-item">
-               ${ind + 1}. ${item}
-       <div class="delete"></div>
-     </li>
-  `
+function createSeriesList(series, parent){
+  parent.innerHTML = ''
+  Arrsort(series)
+  
+  series.forEach((item, ind) =>{
+    parent.innerHTML += `
+      <li class="promo__interactive-item">
+                 ${ind + 1}. ${item}
+         <div class="delete"></div>
+       </li>
+    `
+  })
 
+  document.querySelectorAll('.delete').forEach((trash, ind) => {
+    trash.addEventListener('click', () => {
+      trash.parentElement.remove()
+      seriesDB.series.splice(ind, 1)
 
+      createSeriesList(series, parent)
+      
+    })
+  })
 
-})
+}
+
+Arrsort(seriesDB.series)
+makeChanges()
+deleteAdv (adv)
+ createSeriesList(seriesDB.series, seriesList)
 
 
 
